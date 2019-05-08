@@ -67,7 +67,7 @@ IF(NOT CMAKE_BUILD_TYPE)
     FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
-SET(CMAKE_CXX_FLAGS "-Wall -std=c++11" )
+SET(CMAKE_CXX_FLAGS "-Wall -std=c++14" )
 
 IF(CPLEX)
   SET(CPLEX_LOCATION "/opt/ibm/ILOG/CPLEX_Studio126")
@@ -283,6 +283,7 @@ IF(MPI)
 #  SET(CMAKE_SYSTEM_PREFIX_PATH /usr/mpi/gcc/openmpi-1.10.3rc4)
   find_package(MPI REQUIRED)
   include_directories(${MPI_INCLUDE_PATH})
+include_directories(/usr/include/openmpi-x86_64/)
   SET (mpiflag OPENMPI)
 ENDIF(MPI)
 
