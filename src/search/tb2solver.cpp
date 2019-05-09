@@ -233,11 +233,10 @@ void Solver::parse_solution(const char* certificate)
     vector<Value> values;
     int var;
     Value value;
-    char operation;
     int items;
     while ((certif2 != NULL) && (certif2[0] != 0)) {
-        items = sscanf(certif2, "%d%c%d", &var, &operation, &value);
-        if ((items != 3) || ((unsigned int)var >= wcsp->numberOfVariables())) {
+        items = sscanf(certif2, "%d=%d", &var, &value);
+        if ((items != 2) || ((unsigned int)var >= wcsp->numberOfVariables())) {
             cerr << "Certificate " << certif2 << " incorrect!" << endl;
             exit(EXIT_FAILURE);
         }
@@ -255,32 +254,10 @@ void Solver::parse_solution(const char* certificate)
             assert(j >= 0);
             value = j;
         }
-
-        switch (operation) {
-        case '=': {
-            variables.push_back(var);
-            values.push_back(value);
-            // side-effect: remember last solution
-            wcsp->setBestValue(var, value);
-            break;
-        }
-        case '#': {
-            wcsp->remove(var, value);
-            break;
-        }
-        case '>': {
-            wcsp->increase(var, value+1);
-            break;
-        }
-        case '<': {
-            wcsp->decrease(var, value-1);
-            break;
-        }
-        default: {
-            cerr << "unknown choice point '" << operation << "' for partial assignment!!!" << endl;
-            exit(EXIT_FAILURE);
-        }
-        }
+        variables.push_back(var);
+        values.push_back(value);
+        // side-effect: remember last solution
+        wcsp->setBestValue(var, value);
         //        if (wcsp->unassigned(var)) {
         //          assign(var, value);
         //          // side-effect: remember last solution
@@ -294,7 +271,6 @@ void Solver::parse_solution(const char* certificate)
         //        }
     }
     wcsp->assignLS(variables, values);
-    wcsp->propagate();
     if (ToulBar2::verbose >= 0)
         cout << " Solution cost: [" << std::fixed << std::setprecision(ToulBar2::decimalPoint) << wcsp->getDLb() << "," << wcsp->getDUb() << std::setprecision(DECIMAL_POINT) << "] (nb. of unassigned variables: " << wcsp->numberOfUnassignedVariables() << ")" << endl;
 
@@ -1477,6 +1453,9 @@ pair<Cost, Cost> Solver::hybridSolve(Cluster* cluster, Cost clb, Cost cub)
                     cluster->hbfsLimit = LONGLONG_MAX;
                 } else
                     hbfsLimit = LONGLONG_MAX;
+		if( ToulBar2::hbfs_node_dump > 0 ) {
+                    hbfsLimit = ToulBar2::hbfsOpenNodeLimit;
+		 }
             }
             clb = MAX(clb, open_->getLb(delta));
             showGap(clb, cub);
