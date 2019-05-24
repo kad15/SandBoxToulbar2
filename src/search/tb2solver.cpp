@@ -1453,6 +1453,24 @@ pair<Cost, Cost> Solver::hybridSolve(Cluster* cluster, Cost clb, Cost cub)
                     cluster->hbfsLimit = LONGLONG_MAX;
                 } else
                     hbfsLimit = LONGLONG_MAX;
+
+             //kad
+            	cout << "EPS =  "<< ToulBar2::EPS << "hbfs open node limite for eps = "<< ToulBar2::hbfsOpenNodeLimit<<endl;
+            if (ToulBar2::EPS == true) {
+
+            	ToulBar2::hbfsOpenNodeLimit = 100;
+               	cout << "EPS = true. "<< "hbfs open node limite for eps = "<< ToulBar2::hbfsOpenNodeLimit<<endl;
+                if (open_->size() >= static_cast<std::size_t>(ToulBar2::hbfsOpenNodeLimit))
+            	{
+                	//cout << "hbfsOpenNodeLimit = "<< ToulBar2::hbfsOpenNodeLimit << "$$$$$ kad : size of PQ list open ="<<open_->size()<<endl;
+            		cout << "hbfs open node limite for eps = "<< ToulBar2::hbfsOpenNodeLimit << "$$$$$ kad : size of PQ list open ="<<open_->size()<<endl;
+                	cout << " kad : global UB = " << wcsp->getUb() << endl;
+                	cout << " kad : global LB = " << open_->getLb() << endl;
+                	exit(0);
+                }
+            }
+            ///kad
+
 		if( ToulBar2::hbfs_node_dump > 0 ) {
                     hbfsLimit = ToulBar2::hbfsOpenNodeLimit;
 		 }

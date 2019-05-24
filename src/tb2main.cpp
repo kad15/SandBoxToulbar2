@@ -222,7 +222,8 @@ enum {
     NO_OPT_restart,
     OPT_hbfs,
     NO_OPT_hbfs,
-    OPT_hbfs_node_dump,
+    OPT_hbfs_node_dump, //david
+	OPT_EPS, //kad
     OPT_open,
     OPT_localsearch,
     NO_OPT_localsearch,
@@ -420,6 +421,7 @@ CSimpleOpt::SOption g_rgOptions[] = {
     { OPT_hbfs, (char*)"-hbfs", SO_OPT },
     { OPT_hbfs, (char*)"-bfs", SO_OPT },
     { OPT_hbfs_node_dump, (char*)"-hbfs_nd", SO_OPT },// flag for dump node limit
+	{ OPT_EPS, (char*)"-eps", SO_NONE },// flag for dump node limit
     { NO_OPT_hbfs, (char*)"-hbfs:", SO_NONE },
     { NO_OPT_hbfs, (char*)"-bfs:", SO_NONE },
     { OPT_open, (char*)"-open", SO_REQ_SEP },
@@ -831,6 +833,7 @@ void help_msg(char* toulbar2filename)
     cout << endl;
     cout << "   -hbfs=[integer] : hybrid best-first search, restarting from the root after a given number of backtracks (default value is " << hbfsgloballimit << ")" << endl;
     cout << "   -open=[integer] : hybrid best-first search limit on the number of open nodes (default value is " << ToulBar2::hbfsOpenNodeLimit << ")" << endl;
+    cout << "   -eps : activate embarrassingle parallel hybrid best-first search." << endl;
     cout << "---------------------------" << endl;
     cout << "Alternatively one can call the random problem generator with the following options: " << endl;
     cout << endl;
@@ -1638,16 +1641,25 @@ int _tmain(int argc, TCHAR* argv[])
                 ToulBar2::hbfs = 0;
                 ToulBar2::hbfsGlobalLimit = 0;
             }
-// my option 
+// david's option
 	    if (args.OptionId() == OPT_hbfs_node_dump) {
 		    if (args.OptionArg() == NULL) {
 			    ToulBar2::hbfs_node_dump= 1000;
 		    } else {
 
 			    ToulBar2::hbfs_node_dump= atoll(args.OptionArg());
-			    cout << "my new option defined with kad " << ToulBar2::hbfs_node_dump << endl; 
+			    cout << "david : my new option defined with kad " << ToulBar2::hbfs_node_dump << endl;
 		    }
 	    }
+//kad
+	    if (args.OptionId() == OPT_EPS) {
+	   		    if (args.OptionArg() == NULL) {
+	   		    	ToulBar2::EPS = true;
+	   		     cout << "HBFS  Embarrassingly Parallel Search activated. " << endl;
+	   		    }
+	   	    }
+
+///kad
 
 // fin nouvelle option
 	    if (args.OptionId() == OPT_open) {
