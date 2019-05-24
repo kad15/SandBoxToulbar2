@@ -833,7 +833,7 @@ void help_msg(char* toulbar2filename)
     cout << endl;
     cout << "   -hbfs=[integer] : hybrid best-first search, restarting from the root after a given number of backtracks (default value is " << hbfsgloballimit << ")" << endl;
     cout << "   -open=[integer] : hybrid best-first search limit on the number of open nodes (default value is " << ToulBar2::hbfsOpenNodeLimit << ")" << endl;
-    cout << "   -eps : activate embarrassingle parallel hybrid best-first search." << endl;
+    cout << "   -eps : activate embarrassingly parallel hybrid best-first search." << endl;
     cout << "---------------------------" << endl;
     cout << "Alternatively one can call the random problem generator with the following options: " << endl;
     cout << endl;
