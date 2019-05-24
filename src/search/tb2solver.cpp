@@ -3,6 +3,8 @@
  *
  */
 
+
+#include "utils/tb2files.hpp" //kad
 #include "tb2solver.hpp"
 #include "core/tb2domain.hpp"
 #include "applis/tb2pedigree.hpp"
@@ -1454,27 +1456,78 @@ pair<Cost, Cost> Solver::hybridSolve(Cluster* cluster, Cost clb, Cost cub)
                 } else
                     hbfsLimit = LONGLONG_MAX;
 
-             //kad
-            	cout << "EPS =  "<< ToulBar2::EPS << "hbfs open node limite for eps = "<< ToulBar2::hbfsOpenNodeLimit<<endl;
-            if (ToulBar2::EPS == true) {
 
-            	ToulBar2::hbfsOpenNodeLimit = 100;
-               	cout << "EPS = true. "<< "hbfs open node limite for eps = "<< ToulBar2::hbfsOpenNodeLimit<<endl;
-                if (open_->size() >= static_cast<std::size_t>(ToulBar2::hbfsOpenNodeLimit))
-            	{
-                	//cout << "hbfsOpenNodeLimit = "<< ToulBar2::hbfsOpenNodeLimit << "$$$$$ kad : size of PQ list open ="<<open_->size()<<endl;
-            		cout << "hbfs open node limite for eps = "<< ToulBar2::hbfsOpenNodeLimit << "$$$$$ kad : size of PQ list open ="<<open_->size()<<endl;
-                	cout << " kad : global UB = " << wcsp->getUb() << endl;
-                	cout << " kad : global LB = " << open_->getLb() << endl;
-                	exit(0);
-                }
-            }
-            ///kad
 
-		if( ToulBar2::hbfs_node_dump > 0 ) {
-                    hbfsLimit = ToulBar2::hbfsOpenNodeLimit;
-		 }
+//		if( ToulBar2::hbfs_node_dump > 0 ) {
+//                    hbfsLimit = ToulBar2::hbfsOpenNodeLimit;
+//		 }
             }
+            //kad
+                       	//cout << "EPS =  "<< ToulBar2::EPS << "£££££££££hbfs open node limite for eps = "<< ToulBar2::hbfsOpenNodeLimit<<endl;
+                       if (ToulBar2::EPS == true) {
+
+
+                    	  string nb_process_fic = "nb_process.txt";
+                    	   ifstream file(nb_process_fic ,ios::in);
+
+                    	       if(file.good())  // file exists, it is read
+                    	       {
+                    	           string line; //Une variable pour stocker les lignes lues
+                    	           while(getline(file, line))
+                    	           {
+                    	        	   ToulBar2::hbfsOpenNodeLimit = atoll(line.c_str());
+                    	        	   //cout << "hbfsopennodelimite = " <<  ToulBar2::hbfsOpenNodeLimit<<endl;
+                    	           }
+                    	           file.close();
+
+                    	       }
+                    	       else  // file does not exists it is created and  written
+                    	       {
+
+                    	    	   ofstream file(nb_process_fic);
+                    	    	   if(file)  // if ok
+                    	    	   {
+                    	    		   file << 1000; //default value 1000 for now. todo : machine learning to compute optimal value
+                    	    		   ToulBar2::hbfsOpenNodeLimit =1000;
+                    	    	   }
+                    	    	   else
+                    	    	   {
+
+                    	    	      cout << "File error "<<  nb_process_fic << endl;
+                    	    	   }
+                    	    	   file.close();
+                    	       }
+
+
+                          	//cout << "EPS = true. "<< "hbfs open node limite for eps = "<< ToulBar2::hbfsOpenNodeLimit<<endl;
+                           if (open_->size() >= static_cast<std::size_t>(ToulBar2::hbfsOpenNodeLimit))
+                       	{
+                           	//cout << "hbfsOpenNodeLimit = "<< ToulBar2::hbfsOpenNodeLimit << "$$$$$ kad : size of PQ list open ="<<open_->size()<<endl;
+                       		cout << "hbfs open node limite for eps = "<< ToulBar2::hbfsOpenNodeLimit << "$$$$$ kad : size of PQ list open ="<<open_->size()<<endl;
+                           	cout << " kad : global UB = " << wcsp->getUb() << endl;
+                           	cout << " kad : global LB = " << open_->getLb() << endl;
+
+                           	ofstream file("tb2eps.sh");
+                           	string text = "toto";
+					if (file)  // if ok
+					{
+						file << text;
+
+					} else {
+
+						cout << "File error " << nb_process_fic << endl;
+					}
+					file.close();
+
+
+
+
+                           	exit(0);
+                           }
+                       }
+                       ///kad
+
+
             clb = MAX(clb, open_->getLb(delta));
             showGap(clb, cub);
             if (ToulBar2::hbfs && nbRecomputationNodes > 0) { // wait until a nonempty open node is restored (at least after first global solution is found)

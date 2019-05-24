@@ -1572,6 +1572,7 @@ int _tmain(int argc, TCHAR* argv[])
 
             if (args.OptionId() == OPT_QueueComplexity)
                 ToulBar2::QueueComplexity = true;
+
             if (args.OptionId() == OPT_MSTDAC)
                 ToulBar2::MSTDAC = true;
             else if (args.OptionId() == NO_OPT_MSTDAC)
@@ -1653,10 +1654,8 @@ int _tmain(int argc, TCHAR* argv[])
 	    }
 //kad
 	    if (args.OptionId() == OPT_EPS) {
-	   		    if (args.OptionArg() == NULL) {
 	   		    	ToulBar2::EPS = true;
 	   		     cout << "HBFS  Embarrassingly Parallel Search activated. " << endl;
-	   		    }
 	   	    }
 
 ///kad
