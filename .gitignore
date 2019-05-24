@@ -2,4 +2,4 @@
 .pc
 build
 #src/ToulbarVersion.hpp
-src/MyCPackConf.cmake
+#src/MyCPackConf.cmake
