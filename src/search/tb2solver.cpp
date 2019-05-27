@@ -19,6 +19,7 @@
 #endif
 #include <unistd.h>
 
+
 extern void setvalue(int wcspId, int varIndex, Value value, void* solver);
 
 const string Solver::CPOperation[CP_MAX] = { "ASSIGN", "REMOVE", "INCREASE", "DECREASE", "RANGEREMOVAL" };
@@ -1456,71 +1457,67 @@ pair<Cost, Cost> Solver::hybridSolve(Cluster* cluster, Cost clb, Cost cub)
                 } else
                     hbfsLimit = LONGLONG_MAX;
 
-
-
-//		if( ToulBar2::hbfs_node_dump > 0 ) {
-//                    hbfsLimit = ToulBar2::hbfsOpenNodeLimit;
-//		 }
             }
             //kad
-                       	//cout << "EPS =  "<< ToulBar2::EPS << "£££££££££hbfs open node limite for eps = "<< ToulBar2::hbfsOpenNodeLimit<<endl;
-                       if (ToulBar2::EPS == true) {
+
+			   if (ToulBar2::EPS == true) {
+
+					int nbCores = sysconf(_SC_NPROCESSORS_ONLN);
+					//cout<< "nb of cores = "<< nbCores << endl;
+					int nbProcPerCore = 30;
+				   ToulBar2::hbfsOpenNodeLimit = Tb2Files::nbProcess("nbProcess.txt", nbCores, nbProcPerCore);
+
+				   if (open_->size() >= static_cast<std::size_t>(ToulBar2::hbfsOpenNodeLimit))
+				{
+					//cout << "hbfsOpenNodeLimit = "<< ToulBar2::hbfsOpenNodeLimit << "$$$$$ kad : size of PQ list open ="<<open_->size()<<endl;
+					cout << "hbfs open node limite for eps = "<< ToulBar2::hbfsOpenNodeLimit << "$$$$$ kad : size of PQ list open ="<<open_->size()<<endl;
+					cout << " kad : global UB = " << wcsp->getUb() << endl;
+					cout << " kad : global LB = " << open_->getLb() << endl;
+
+					OpenNode nd = open_->top(); // take the top of pq
+					open_->pop(); // remove it from pq
+					cout << " cost = GLB associated with the node = " <<nd.getCost()<<endl;
+					cout << " first position in CP vector = " <<nd.first<<endl;
+					cout << " last position in CP vector = "<<nd.last<<endl;
 
 
-                    	  string nb_process_fic = "nb_process.txt";
-                    	   ifstream file(nb_process_fic ,ios::in);
+//					ptrdiff_t maxsize = nd.last - nd.first;
+//					    int assignLS[maxsize];
+//					    Value valueLS[maxsize];
+//					    unsigned int size = 0;
+//					for (ptrdiff_t idx = nd.first; idx < nd.last; ++idx) {
+//						if (*cp[idx].op == CP_ASSIGN ) {
+//					        //if ((cp[idx].op == CP_ASSIGN && !(cp[idx].reverse && idx < nd.last - 1)) || (cp[idx].op == CP_REMOVE && cp[idx].reverse && idx < nd.last - 1)) {
+//					            assignLS[size] = cp[idx].varIndex;
+//					            valueLS[size] = cp[idx].value;
+//					            size++;
+//					        }
+//					    }
 
-                    	       if(file.good())  // file exists, it is read
-                    	       {
-                    	           string line; //Une variable pour stocker les lignes lues
-                    	           while(getline(file, line))
-                    	           {
-                    	        	   ToulBar2::hbfsOpenNodeLimit = atoll(line.c_str());
-                    	        	   //cout << "hbfsopennodelimite = " <<  ToulBar2::hbfsOpenNodeLimit<<endl;
-                    	           }
-                    	           file.close();
-
-                    	       }
-                    	       else  // file does not exists it is created and  written
-                    	       {
-
-                    	    	   ofstream file(nb_process_fic);
-                    	    	   if(file)  // if ok
-                    	    	   {
-                    	    		   file << 1000; //default value 1000 for now. todo : machine learning to compute optimal value
-                    	    		   ToulBar2::hbfsOpenNodeLimit =1000;
-                    	    	   }
-                    	    	   else
-                    	    	   {
-
-                    	    	      cout << "File error "<<  nb_process_fic << endl;
-                    	    	   }
-                    	    	   file.close();
-                    	       }
+				cout << (*cp_)[nd.first].reverse<<endl;
+					string eps_commande = "time ./parallel.sh -j";
+					eps_commande += to_string(nbCores);
+					eps_commande += " -r ";
+					string ficin = "404.wcsp";
+					eps_commande +=" \"toulbar2 ";
+					eps_commande += ficin;
+					eps_commande += " -x=*\" ";
 
 
-                          	//cout << "EPS = true. "<< "hbfs open node limite for eps = "<< ToulBar2::hbfsOpenNodeLimit<<endl;
-                           if (open_->size() >= static_cast<std::size_t>(ToulBar2::hbfsOpenNodeLimit))
-                       	{
-                           	//cout << "hbfsOpenNodeLimit = "<< ToulBar2::hbfsOpenNodeLimit << "$$$$$ kad : size of PQ list open ="<<open_->size()<<endl;
-                       		cout << "hbfs open node limite for eps = "<< ToulBar2::hbfsOpenNodeLimit << "$$$$$ kad : size of PQ list open ="<<open_->size()<<endl;
-                           	cout << " kad : global UB = " << wcsp->getUb() << endl;
-                           	cout << " kad : global LB = " << open_->getLb() << endl;
+					//"toulbar2 404.wcsp -x=*" ",0=3,1=5,2=9" ";
 
-                           	ofstream file("tb2eps.sh");
-                           	string text = "toto";
-					if (file)  // if ok
-					{
-						file << text;
-
-					} else {
-
-						cout << "File error " << nb_process_fic << endl;
-					}
-					file.close();
+//time ./parallel.sh -j16 -r "toulbar2 scen06.wcsp.xz -x=*" ",0=3,1=5,2=9" ",0=3,1=5,2#9" ",0>3,1#5,2<9"
 
 
+                    Tb2Files::write_file("tb2eps.sh" , eps_commande);
 
+
+// #include <thread>
+// unsigned int nthreads = std::thread::hardware_concurrency();
+// grep -i 'processor' /proc/cpuinfo | wc -l  outputs the numbers of cores
+					// numofcores = sysconf(_SC_NPROCESSORS_ONLN); // Get the number of logical CPUs.
+//#include <omp.h>
+//omp_get_num_procs();
 
                            	exit(0);
                            }

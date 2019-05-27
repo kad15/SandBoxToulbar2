@@ -1,1 +1,1 @@
-toto
+time ./parallel.sh -j8 -r  "toulbar2 404.wcsp -x=*" 
