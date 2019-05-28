@@ -1,9 +1,9 @@
-/** \file tb2wcsp.hpp
- *  \brief General purpose class to play with files
- *
- *
- *  Created on: 24 mai 2019
- *      Author: abeldjilali
+/**
+ * \file tb2files.hpp
+ * \brief General purpose class to play with files
+ * \author kad
+ * \date 24 mai 2019
+ * \version 0.1
  */
 
 #ifndef SRC_UTILS_TB2FILES_HPP_

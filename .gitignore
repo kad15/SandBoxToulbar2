@@ -1,5 +1,6 @@
 .vscode
 .pc
 build
+release
 #src/ToulbarVersion.hpp
 #src/MyCPackConf.cmake

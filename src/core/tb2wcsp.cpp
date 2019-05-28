@@ -205,6 +205,7 @@ Long ToulBar2::hbfs;
 Long ToulBar2::hbfsGlobalLimit;
 Long ToulBar2::hbfs_node_dump;
 bool ToulBar2::EPS; //kad
+string ToulBar2::problemFileName; //kad
 
 Long ToulBar2::hbfsAlpha; // inverse of minimum node redundancy goal limit
 Long ToulBar2::hbfsBeta; // inverse of maximum node redundancy goal limit
@@ -256,6 +257,7 @@ void tb2init()
     ToulBar2::weightedTightness = 0;
     ToulBar2::MSTDAC = false;
     ToulBar2::EPS = false; //kad
+    ToulBar2::problemFileName = "4wqueens.wcsp"; //kad default value for problem file name
     ToulBar2::DEE = 1;
     ToulBar2::DEE_ = 0;
     ToulBar2::nbDecisionVars = 0;
